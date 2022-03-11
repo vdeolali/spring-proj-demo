@@ -2,13 +2,13 @@ package org.play.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootApplication
@@ -59,7 +59,24 @@ class RestAPIonContainers {
 		//containersList.addAll(List.of(new CoolContainers("Pink Lady")), new CoolContainers("Fuji"), new CoolContainers("Gala"));
 	}
 	@RequestMapping(value = "/apples", method = RequestMethod.GET)
-	Iterable<CoolContainers> getContainers(){
+	Iterable<CoolContainers> getContainers()
+	{
 		return containersList;
+	}
+
+	@GetMapping("/apples/{id}")
+	Optional<CoolContainers> getContainersbyId(@PathVariable String id) {
+		for (CoolContainers c: containersList){
+			if(c.getID().equals(id)){
+				return Optional.of(c);
+			}
+		}
+		return Optional.empty();
+	}
+	@RequestMapping(value = "/apples", method = RequestMethod.POST)
+	public void addCoolContainer(@RequestBody CoolContainers incoming){
+		System.out.println("Here" + incoming.getName());
+		System.out.println("ID" + incoming.getID());
+		containersList.add(incoming);
 	}
 }
